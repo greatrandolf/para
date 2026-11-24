@@ -1,0 +1,267 @@
+import type {
+  CommuterProfile,
+  LedgerEntry,
+  LiveTrip,
+  PaymentChannel,
+  RecentView,
+  RouteFilterOption,
+  RouteOption,
+  TopUpPackage,
+  TransitRoute,
+  WalletSummary,
+} from '@/types/commuter';
+
+export const commuterProfile: CommuterProfile = {
+  firstName: 'Maria',
+  initials: 'M',
+  balance: 45,
+  preferredRouteCode: '17B',
+};
+
+export const routeFilterOptions: RouteFilterOption[] = [
+  { value: 'all', label: 'All Transit (24)', icon: 'alt-route' },
+  { value: 'jeepney', label: 'Jeepneys Only (16)', icon: 'airport-shuttle' },
+  { value: 'bus', label: 'Buses Only (8)', icon: 'directions-bus' },
+];
+
+export const transitRoutes: TransitRoute[] = [
+  {
+    id: 'cubao-divisoria',
+    code: '04-C',
+    name: 'Colon to I.T Park',
+    vehicleType: 'jeepney',
+    vehicleStyle: 'mixedJeepney',
+    vehicleLabel: 'Traditional & Modern Jeepney',
+    vehicleIcon: 'local-taxi',
+    vehiclesOnRoad: 6,
+    via: 'via Aurora Blvd • Legarda • Recto',
+    distance: '9.2 km',
+    stops: 14,
+    baseFare: 13,
+    trackPassFare: 1,
+    status: 'active',
+  },
+  {
+    id: 'fairview-pitx',
+    code: '11-Q',
+    name: 'Fairview — PITX',
+    vehicleType: 'bus',
+    vehicleStyle: 'cityBus',
+    vehicleLabel: 'City Bus (Aircon)',
+    vehicleIcon: 'directions-bus',
+    vehiclesOnRoad: 4,
+    via: 'via Quezon Ave • España • Roxas Blvd',
+    distance: '34 km',
+    stops: 28,
+    baseFare: 15,
+    trackPassFare: 1,
+    status: 'active',
+  },
+  {
+    id: 'monumento-baclaran',
+    code: '01-T',
+    name: 'Monumento — Baclaran',
+    vehicleType: 'jeepney',
+    vehicleStyle: 'modernJeepney',
+    vehicleLabel: 'Modern Jeepney (BEEP)',
+    vehicleIcon: 'electric-bolt',
+    vehiclesOnRoad: 8,
+    via: 'via Rizal Ave • Taft Avenue Corridor',
+    distance: '18 km',
+    stops: 22,
+    baseFare: 15,
+    trackPassFare: 1,
+    status: 'active',
+  },
+  {
+    id: 'pasig-quiapo',
+    code: '09-P',
+    name: 'Pasig Palengke — Quiapo',
+    vehicleType: 'jeepney',
+    vehicleStyle: 'traditionalJeepney',
+    vehicleLabel: 'Traditional Jeepney',
+    vehicleIcon: 'airport-shuttle',
+    vehiclesOnRoad: 0,
+    via: 'via Shaw Blvd • Magsaysay Blvd',
+    distance: '—',
+    stops: 0,
+    baseFare: 13,
+    trackPassFare: 0,
+    status: 'offline',
+  },
+];
+
+export const recentViews: RecentView[] = [
+  {
+    id: 'recent-cubao',
+    routeName: 'Colon to I.T Park',
+    status: 'Active',
+    viewedAgo: '12 mins ago',
+    vehiclesTracked: 2,
+  },
+];
+
+export const liveTrip: LiveTrip = {
+  routeCode: '17B',
+  routeTag: 'ROUTE 17B',
+  title: 'IT Park ⇄ Carbon (via Escario)',
+  passTimeLeft: '18m left',
+  corridorLabel: 'ROUTE 17B CORRIDOR • ₱1 PAID',
+  vehiclesActive: 10,
+  defaultDirection: 'colon',
+  directions: [
+    {
+      id: 'apas',
+      label: 'To Apas (IT Park)',
+      selectorLabel: 'Towards Apas (5 active units)',
+      icon: 'north-east',
+      units: [
+        { id: 'u14', name: 'Unit 14', eta: '4m away' },
+        { id: 'u08', name: 'Unit 08', eta: '9m away' },
+        { id: 'u05', name: 'Unit 05', eta: '6m away' },
+        { id: 'u19', name: 'Unit 19', eta: '14m away' },
+        { id: 'u26', name: 'Unit 26', eta: '18m away' },
+      ],
+    },
+    {
+      id: 'colon',
+      label: 'To Colon (Carbon)',
+      selectorLabel: 'Towards Colon (Tracking GMD-1782 • 18m ETA)',
+      icon: 'south-west',
+      units: [
+        { id: 'u23', name: 'Unit 23 (GMD-1782)', eta: '3m (Tracked)', tracked: true },
+        { id: 'u11', name: 'Unit 11', eta: '12m away' },
+        { id: 'u31', name: 'Unit 31', eta: '7m away' },
+        { id: 'u37', name: 'Unit 37', eta: '10m away' },
+        { id: 'u42', name: 'Unit 42', eta: '15m away' },
+      ],
+    },
+  ],
+  description: 'Live tracking Cebu City Route 17B (Apas/IT Park to Colon/Carbon via Osmeña Blvd).',
+  telemetryNote: 'GPS: 5s Real-Time Telemetry',
+  guaranteeNote: 'No Charge If Walay Driver',
+  roadShield: '17B',
+  pickup: { title: 'Go to pickup point', subtitle: 'Kamputhaw, N. Escario St.' },
+  vehiclePlate: 'GMD-1782',
+  stopNote: 'Making 1 stop first',
+  mapLabels: ['Gorordo Ave. (IT Park)', 'N. Escario St.', 'Cebu Provincial Capitol', "Cebu Doctors' Hosp"],
+  eta: { label: 'UNLOCKED ARRIVAL ETA', nextStop: 'Next Stop: Escario Capitol', minutes: 3, status: 'ON SCHEDULE' },
+  vehicleClass: 'Modern Jeep',
+  routeLine: '17B: Apas (IT Park) ⇄ Carbon via Escario / Capitol / Fuente',
+  driver: { name: 'Mang Ernesto Santos', initials: 'ES', rating: 4.9, safeTrips: '2,410' },
+  lastGpsSeconds: 3,
+  accuracyNote: '(High Accuracy 3m)',
+  pass: {
+    title: '₱1.00 Paid • Live Route 17B Telemetry',
+    subtitle: 'Walay Driver = ₱0 Refund Guarantee',
+    status: 'ACTIVE',
+  },
+};
+
+/** Live Map route options (revision 4); the first is selected by default. */
+export const routeOptions: RouteOption[] = [
+  {
+    code: '17D',
+    name: 'Route 17D',
+    badge: 'BEST OPTION',
+    tone: 'best',
+    subtitle: 'Alternative route · 1 vehicle approaching',
+    eta: '5 min',
+    etaCaption: 'ETA',
+  },
+  {
+    code: '44B',
+    name: 'Route 44B',
+    badge: 'ALTERNATIVE',
+    tone: 'alternative',
+    subtitle: '2 vehicles approaching',
+    eta: '9 min',
+    etaCaption: 'ETA',
+  },
+  {
+    code: '17B',
+    name: 'Route 17B',
+    badge: 'YOUR PREFERRED ROUTE',
+    tone: 'preferred',
+    subtitle: '1 vehicle approaching',
+    eta: '18 min',
+    etaCaption: '18m left',
+  },
+];
+
+export const walletSummary: WalletSummary = {
+  balance: 45,
+  sessionsAvailable: 45,
+  ledgerCount: 18,
+};
+
+export const topUpPackages: TopUpPackage[] = [
+  { amount: 20, views: '20 Live Views', perk: '₱1.00 / trip', perkIcon: 'schedule' },
+  { amount: 40, views: '40 Live Views', perk: '₱1.00 / trip', perkIcon: 'schedule' },
+  { amount: 50, views: '50 Live Views + 2 Bonus', perk: '52 Total Sessions', perkIcon: 'stars', tag: 'POPULAR' },
+  {
+    amount: 100,
+    views: '100 Views + 5 Bonus',
+    perk: '105 Total Sessions',
+    perkIcon: 'military-tech',
+    tag: 'BEST VALUE',
+  },
+];
+
+export const paymentChannels: PaymentChannel[] = [
+  { id: 'gcash', name: 'GCash', icon: 'account-balance-wallet' },
+  { id: 'maya', name: 'Maya', icon: 'credit-card' },
+  { id: 'shopeepay', name: 'ShopeePay', icon: 'shopping-bag' },
+  { id: 'seven-eleven', name: '7-Eleven', icon: 'store' },
+];
+
+export const ledgerEntries: LedgerEntry[] = [
+  {
+    id: 'TXN-83910',
+    kind: 'view',
+    title: 'Live View: Colon to I.T Park',
+    time: '2 mins ago',
+    ref: 'TXN-83910',
+    status: 'Completed (3 vehicles viewed)',
+    statusTone: 'success',
+    amount: -1,
+    note: 'Active Pass',
+    icon: 'fmd-good',
+  },
+  {
+    id: 'TXN-83742',
+    kind: 'view',
+    title: 'Live View: Monumento - Baclaran',
+    time: 'Today 8:15 AM',
+    ref: 'TXN-83742',
+    status: 'Completed',
+    statusTone: 'success',
+    amount: -1,
+    note: 'Active Pass',
+    icon: 'near-me',
+  },
+  {
+    id: 'CAS-19402',
+    kind: 'cashIn',
+    title: 'Cash-in via GCash',
+    time: 'Yesterday 4:30 PM',
+    ref: 'CAS-19402',
+    status: 'Verified',
+    statusTone: 'success',
+    amount: 50,
+    note: '+2 Bonus views',
+    icon: 'add-circle',
+  },
+  {
+    id: 'REV-00214',
+    kind: 'view',
+    title: 'Zero-Charge View',
+    time: 'Yesterday 1:10 PM',
+    ref: 'REV-00214',
+    status: 'No Deduction (Guarantee applied)',
+    statusTone: 'warning',
+    amount: 0,
+    note: 'No active drivers',
+    icon: 'shield-moon',
+  },
+];
