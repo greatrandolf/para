@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Platform, Pressable, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import type { LatLng } from 'react-native-maps';
 
 import { colors } from '@/constants/theme';
@@ -36,7 +36,7 @@ import { LiveMapSheet } from './LiveMapSheet';
 import { LiveViewPayBar } from './LiveViewPayBar';
 import { AD_LINK_ROOM, chipStyles, minimizedSheetHeight, styles } from './styles';
 import { useCommuteOptions } from './useCommuteOptions';
-import { checkPin, pinLabel, waitingPoint } from './waitingPin';
+import { pinLabel, waitingPoint } from './waitingPin';
 import { pinDirection } from './commuteOptions';
 import { buildPath } from './livePath';
 
@@ -57,16 +57,8 @@ export function LiveTrackingScreen() {
   // While placing the pin, the route sheet and pay button are hidden so the map is bigger.
   const [placingPin, setPlacingPin] = useState(false);
   const waitAt = waitingPoint(waitPin, myLocation);
-  const changePin = (pin: LatLng | undefined) => {
-    if (pin) {
-      const check = checkPin(pin, myLocation);
-      if (!check.ok) {
-        Alert.alert('Too far to wait there', check.message);
-        return;
-      }
-    }
-    setWaitPin(pin);
-  };
+  // Any spot on the map: jeeps too far from it to wait for are drawn grey, not refused.
+  const changePin = (pin: LatLng | undefined) => setWaitPin(pin);
   // Where the commuter is going (Switch, or the map's direction pill): outbound is the sample's "towards Colon".
   const [direction, setDirection] = useState<TravelDirection>(trip.defaultDirection);
   const routeDirection = direction === 'colon' ? 'outbound' : 'inbound';
@@ -106,12 +98,14 @@ export function LiveTrackingScreen() {
   // The pin's lane, or both lanes (undefined) when the pin is also close to the other direction's road.
   const wayDirection = waitPin && selectedPaths ? pinDirection(selectedPaths, waitPin, routeDirection) : routeDirection;
   // Routes are free to see; live jeepneys on a route need a ₱1 pass (Revision 11).
-  // One ₱1 pass covers every route on the way and shows only the jeepneys that shared it (shared-view-earnings).
+  // One ₱1 pass covers every route on the way. It shows every live jeepney on the route: grey while too far to wait
+  // for (or passed), orange once within the ₱1-sharing distance of the boarding point (the map's jeepIncoming).
+  // The ₱1 itself was shared once, when paid (pass.driverIds): among the orange jeeps then, else (none within 3 km) the
+  // grey ones already coming this way. A jeep that turns orange later is shown but not paid from this view.
   const pass = useLivePass();
   const jeepWatch = useJeepWatch();
   const paid = pass.has(selected?.code);
   const liveJeeps = selected ? (commute.jeepsByRoute[selected.routeId] ?? []) : [];
-  const paidJeeps = liveJeeps.filter((j) => pass.driverIds.includes(j.driverId));
   const [paying, setPaying] = useState(false);
   const [headingPicked, setHeadingPicked] = useState(false);
   // ad-supported-live-view: ₱1 or more pays (15 min); under ₱1 a rewarded ad gives a few minutes, never a top-up pop-up.
@@ -174,7 +168,7 @@ export function LiveTrackingScreen() {
   const renderMap = () => (
     <CorridorMap
       route={selected?.route}
-      jeeps={paid ? paidJeeps : []}
+      jeeps={paid ? liveJeeps : []}
       locked={!!selected && !paid}
       minutesLeft={pass.minutesLeft(selected?.code)}
       adPass={pass.passKind === 'ad'}

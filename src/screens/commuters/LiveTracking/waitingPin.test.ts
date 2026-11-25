@@ -1,4 +1,4 @@
-import { checkPin, MAX_PIN_FROM_ME_M, pinLabel, waitingPoint } from './waitingPin';
+import { pinLabel, waitingPoint } from './waitingPin';
 
 const me = { latitude: 10.3186, longitude: 123.8977 };
 // ~1 m per 0.000009° of latitude.
@@ -11,23 +11,6 @@ describe('waitingPoint', () => {
     expect(waitingPoint(undefined, me)).toBe(me);
     expect(waitingPoint(pin, undefined)).toBe(pin);
     expect(waitingPoint(undefined, undefined)).toBeUndefined();
-  });
-});
-
-describe('checkPin', () => {
-  it('allows a pin within walking distance', () => {
-    expect(checkPin(north(MAX_PIN_FROM_ME_M - 50), me)).toEqual({ ok: true });
-  });
-
-  it('refuses a pin too far from the commuter', () => {
-    expect(checkPin(north(MAX_PIN_FROM_ME_M + 200), me)).toEqual({
-      ok: false,
-      message: 'Pin a spot within 2.0 km of you.',
-    });
-  });
-
-  it('allows any pin without GPS', () => {
-    expect(checkPin(north(10_000), undefined)).toEqual({ ok: true });
   });
 });
 

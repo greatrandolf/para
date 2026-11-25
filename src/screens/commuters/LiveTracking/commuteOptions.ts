@@ -46,8 +46,9 @@ const otherWay = (key: DirectionKey): DirectionKey => (key === 'outbound' ? 'inb
 export const TURN_JOIN_M = 300;
 /**
  * A jeep this many road metres from the boarding point (or nearer) counts as coming, on the same direction or across
- * the turnaround (~10 min at JEEP_M_PER_MIN). Further away it is "too far to wait": grey, not in the ETA, and it does
- * not share the ₱1 (the backend's MAX_WAIT_M).
+ * the turnaround (~10 min at JEEP_M_PER_MIN). Further away it is "too far to wait": grey and not in the ETA. It shares
+ * the ₱1 only when no jeep is within this distance and it is already on the commuter's direction (the backend's
+ * MAX_WAIT_M and sharedWith); one still going the other way never does (the free Notify me instead).
  */
 export const ACROSS_TURN_M = 3_000;
 /** The same limit, by its meaning for jeeps on the commuter's own direction. */

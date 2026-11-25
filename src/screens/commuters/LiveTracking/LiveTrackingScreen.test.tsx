@@ -551,7 +551,8 @@ describe('LiveTrackingScreen with less than ₱1 (Watch Ads)', () => {
     expect(screen.queryByTestId('set-waiting-pin')).toBeNull();
   });
 
-  it('refuses a pin more than 2 km from the commuter', async () => {
+  // Jeeps too far from the pin to wait for are drawn grey instead; the pin itself is never refused.
+  it('accepts a pin far from the commuter, with no alert', async () => {
     const alert = jest.spyOn(require('react-native').Alert, 'alert');
     // The commuter is in Manila; the map's middle is in Cebu.
     jest.requireMock('@/hooks/useCommuterLocation').mockLocation.current = {
@@ -561,8 +562,8 @@ describe('LiveTrackingScreen with less than ₱1 (Watch Ads)', () => {
     await render(<LiveTrackingScreen />);
     await fireEvent.press(screen.getByTestId('set-waiting-pin'));
     await fireEvent.press(screen.getByTestId('confirm-waiting-pin'));
-    expect(alert).toHaveBeenCalledWith('Too far to wait there', 'Pin a spot within 2.0 km of you.');
-    expect(screen.queryByTestId('waiting-pin')).toBeNull();
+    expect(alert).not.toHaveBeenCalled();
+    expect(screen.getByTestId('waiting-pin')).toBeOnTheScreen();
     alert.mockRestore();
   });
 
